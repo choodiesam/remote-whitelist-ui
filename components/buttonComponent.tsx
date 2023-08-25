@@ -1,9 +1,17 @@
+interface Props {
+    text?: string
+    onClick?: () => void
+    bgColor?: string
+    textColor?: string
+}
+
+
 export default function ButtonComponent({
     text = "",
     onClick = () => { },
     bgColor = "bg-stone-500",
     textColor = "text-white"
-}: { text: string, onClick: () => void, bgColor: string, textColor: string }) {
+}: Props) {
     return (
         <button
             onClick={onClick}

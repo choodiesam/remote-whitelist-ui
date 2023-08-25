@@ -92,7 +92,7 @@ export default function WhitelistDetail({ params }: { params: { id: string } }) 
     useEffect(() => {
         fetchWhitelist(params.id)
             .then(data => setWhitelist(data))
-    }, [])
+    }, [params.id])
 
     function removeWhitelist(whitelist: Whitelist) {
         deleteWhitelist(whitelist)

@@ -1,9 +1,17 @@
+interface Props {
+    isChecked: boolean
+    onChange: () => void
+    onColor?: string
+    offColor?: string
+}
+
+
 export default function SwitchComponent({
     isChecked,
     onChange,
     onColor = "bg-stone-400",
     offColor = "bg-gray-300"
-}: { isChecked: boolean, onChange: () => void, onColor: string, offColor: string }) {
+}: Props) {
     function handleClick() {
         onChange()
     }

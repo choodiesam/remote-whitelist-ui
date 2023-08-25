@@ -15,7 +15,7 @@ export default function Profile() {
             <div className="text-sm">Profile</div>
             <div className="flex gap-4 items-center">
                 <div className="font-bold">{session.data.user.name}</div>
-                <ButtonComponent text="Sign out" onClick={() => signOut({callbackUrl: "/"})} bgColor="bg-emerald-600" />
+                <ButtonComponent text="Sign out" onClick={() => signOut({ callbackUrl: "/" })} bgColor="bg-emerald-600" />
             </div>
         </div>
     )

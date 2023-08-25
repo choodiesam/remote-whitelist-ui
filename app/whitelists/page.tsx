@@ -74,9 +74,9 @@ export default function Whitelist() {
                 <ButtonComponent text="Create" onClick={() => onSubmit()} bgColor="bg-emerald-600" />
                 {whitelists.map(whitelist => {
                     return (
-                        <Fragment key={whitelist._id}>
+                        <Fragment key={whitelist._id.toString()}>
                             <div className="ml-2">{whitelist.name}</div>
-                            <ButtonComponent text="Detail" onClick={() => router.push(`/whitelists/${whitelist._id}`)} />
+                            <ButtonComponent text="Detail" onClick={() => router.push(`/whitelists/${whitelist._id.toString()}`)} />
                         </Fragment>
                     )
                 })}
