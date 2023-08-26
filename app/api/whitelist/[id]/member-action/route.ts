@@ -8,7 +8,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     try {
         const user = await getUserFromSession()
         const whitelist = await getOwnedWhitelist(user._id, new ObjectId(params.id))
-        const logs = getAllLogsByWhitelist(whitelist)
+        const logs = await getAllLogsByWhitelist(whitelist)
         return NextResponse.json(logs)
     } catch (error) {
         if (error instanceof UserNotFound) {
