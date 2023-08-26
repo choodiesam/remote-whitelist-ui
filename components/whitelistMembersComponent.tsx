@@ -76,7 +76,7 @@ export default function WhitelistMembersComponent({ whitelist, onChange }: Props
         }, 10000)
 
         return () => clearInterval(interval)
-    }, [])
+    }, [whitelist])
 
     async function handleRemoveMember(member: Member) {
         const removed = await removeMember(whitelist, member)
