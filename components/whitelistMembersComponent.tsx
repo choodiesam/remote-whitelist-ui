@@ -136,7 +136,7 @@ export default function WhitelistMembersComponent({ whitelist, onChange }: Props
                         <Fragment key={member.steamId}>
                             <MemberOnlineStatusComponent
                                 isLoading={membersOnlineLoading}
-                                isOnline={membersOnline.find(mO => mO.memberId === member.steamId)?.action === "connected"}
+                                logMemberAction={membersOnline.find(mO => mO.memberId === member.steamId)}
                             />
                             <div className="ml-2">{member.steamId}</div>
                             <SwitchComponent isChecked={member.allowed} onChange={() => handleToggleAccessMember(member)} onColor="bg-emerald-500" />
