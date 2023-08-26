@@ -7,7 +7,7 @@ import { addMemberAction } from "@/services/logMemberActionModel"
 export async function POST(req: NextRequest, { params }: { params: { apiToken: string } }) {
     try {
         const whitelist = await getByApiToken(params.apiToken)
-        const data = LogMemberActionJson.toLogMemberAction(await req.json())
+        const data = LogMemberActionJson.toLogMemberAction(await req.text())
         await addMemberAction(whitelist, data.playerName, data.playerId, data.playerAddress, data.action)
 
         return NextResponse.json({})
