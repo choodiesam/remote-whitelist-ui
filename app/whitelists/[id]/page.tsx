@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
-import { Member, Whitelist } from "@/services/interfaces"
+import { Whitelist } from "@/services/interfaces"
 import { useRouter } from "next/navigation"
 import LoadingComponent from "@/components/loadingComponent"
 import ButtonComponent from "@/components/buttonComponent"
@@ -49,41 +49,6 @@ async function regenerateApiToken(whitelist: Whitelist): Promise<{ apiToken: str
         })
 }
 
-async function addMember(whitelist: Whitelist, member: Member): Promise<boolean> {
-    return fetch(`/api/whitelist/${whitelist._id}/member/${member.steamId}`, {
-        method: "POST",
-        body: JSON.stringify({ allowed: member.allowed })
-    })
-        .then(res => {
-            if (res.status !== 201) {
-                return false
-            }
-            return true
-        })
-}
-
-async function removeMember(whitelist: Whitelist, member: Member) {
-    return fetch(`/api/whitelist/${whitelist._id}/member/${member.steamId}`, { method: "DELETE" })
-        .then(res => {
-            if (res.status !== 200) {
-                return false
-            }
-            return true
-        })
-}
-
-async function updateAccessMember(whitelist: Whitelist, member: Member, isAllowed: boolean) {
-    return fetch(`/api/whitelist/${whitelist._id}/member/${member.steamId}`, {
-        method: "PUT",
-        body: JSON.stringify({ allowed: isAllowed })
-    })
-        .then(res => {
-            if (res.status !== 200) {
-                return false
-            }
-            return true
-        })
-}
 
 export default function WhitelistDetail({ params }: { params: { id: string } }) {
     const router = useRouter()
@@ -127,41 +92,13 @@ export default function WhitelistDetail({ params }: { params: { id: string } }) 
         navigator.clipboard.writeText(`${location.protocol}//${location.host}/whitelists/join?inviteCode=${inviteCode}`)
         toast.success("Copied invite link to clipboard")
     }
-    function copyApiUrl(apiToken: string) {
+    function copyWhitelistEndpoint(apiToken: string) {
         navigator.clipboard.writeText(`${location.protocol}//${location.host}/api/whitelist/plugin/${apiToken}`)
-        toast.success("Copied api url to clipboard")
+        toast.success("Copied whitelist endpoint to clipboard")
     }
-    async function handleRemoveMember(whitelist: Whitelist, member: Member) {
-        const removed = await removeMember(whitelist, member)
-
-        if (removed) {
-            setWhitelist({ ...whitelist, members: whitelist.members.filter(m => m.steamId !== member.steamId) })
-            toast.success(`Member with steam id ${member.steamId} was removed`)
-        } else {
-            toast.error("Failed to remove member from whitelist")
-        }
-    }
-    async function handleToggleAccessMember(whitelist: Whitelist, member: Member) {
-        const isAllowed = !member.allowed
-        const updated = await updateAccessMember(whitelist, member, isAllowed)
-
-        if (updated) {
-            member.allowed = isAllowed
-            setWhitelist({ ...whitelist })
-            toast.success("The member's access has been adjusted")
-        } else {
-            toast.error("Changes member access failed")
-        }
-    }
-    async function handleAddMember(whitelist: Whitelist, member: Member) {
-        const added = await addMember(whitelist, member)
-
-        if (added) {
-            setWhitelist({ ...whitelist, members: [...whitelist.members, member] })
-            toast.success("Member added")
-        } else {
-            toast.error("Member can not be add to whitelist")
-        }
+    function copyMemberEndpoint(apiToken: string) {
+        navigator.clipboard.writeText(`${location.protocol}//${location.host}/api/whitelist/plugin/${apiToken}/member-action`)
+        toast.success("Copied member endpoint to clipboard")
     }
 
     if (whitelist === null) {
@@ -179,19 +116,15 @@ export default function WhitelistDetail({ params }: { params: { id: string } }) 
                 <div className="font-bold">Invite code</div>
                 <div>{whitelist.inviteCode}</div>
             </div>
-            <div className="flex gap-6">
+            <div className="grid grid-cols-3 gap-4 max-w-3xl">
                 <ButtonComponent text="Copy invite link" onClick={() => copyInviteLink(whitelist.inviteCode)} />
-                <ButtonComponent text="Copy api url" onClick={() => copyApiUrl(whitelist.apiToken)} />
+                <ButtonComponent text="Copy whitelist endpoint" onClick={() => copyWhitelistEndpoint(whitelist.apiToken)} />
+                <ButtonComponent text="Copy member action endpoint" onClick={() => copyMemberEndpoint(whitelist.apiToken)} />
                 <ButtonComponent text="New invite code" onClick={() => newInviteCode(whitelist)} bgColor="bg-emerald-600" />
                 <ButtonComponent text="New api token" onClick={() => newApiToken(whitelist)} bgColor="bg-emerald-600" />
                 <ButtonComponent text="Remove" onClick={() => removeWhitelist(whitelist)} bgColor="bg-rose-500" />
             </div>
-            <WhitelistMembersComponent
-                members={whitelist.members}
-                onRemove={(member: Member) => handleRemoveMember(whitelist, member)}
-                onToggleAccess={(member: Member) => handleToggleAccessMember(whitelist, member)}
-                onAddMember={(member) => handleAddMember(whitelist, member)}
-            />
+            <WhitelistMembersComponent whitelist={whitelist} onChange={() => setWhitelist({ ...whitelist })} />
         </div>
     )
 }

@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb"
 
 export type AccountProvider = "steam" | "discord" | "twitch"
+export type MemberActionType = "connected" | "disconnected"
 
 export interface WhitelistPlugin {
     members: string[]
@@ -27,7 +28,7 @@ export interface LogMemberAction {
     memberName: string,
     memberId: string,
     memberAddress: string,
-    action: string,
+    action: MemberActionType,
     createdAt: string,
 }
 

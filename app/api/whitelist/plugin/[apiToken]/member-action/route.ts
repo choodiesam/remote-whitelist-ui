@@ -10,7 +10,7 @@ export async function POST(req: NextRequest, { params }: { params: { apiToken: s
         const data = LogMemberActionJson.toLogMemberAction(await req.text())
         await addMemberAction(whitelist, data.playerName, data.playerId, data.playerAddress, data.action)
 
-        return NextResponse.json({})
+        return new NextResponse("", { status: 201 })
     } catch (error) {
         if (error instanceof WhitelistNotFound) {
             return new NextResponse("", { status: 401 })

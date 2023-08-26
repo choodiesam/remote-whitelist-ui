@@ -17,7 +17,7 @@ export default function SwitchComponent({
     }
 
     return (
-        <div onClick={() => handleClick()} className={`flex items-center p-1 transition cursor-pointer w-12 h-7 rounded-full ${isChecked ? onColor : offColor}`}>
+        <div onClick={() => handleClick()} className={`flex items-center p-1 transition cursor-pointer w-12 h-7 rounded-full justify-self-center ${isChecked ? onColor : offColor}`}>
             <div className={`w-5 h-5 rounded-full bg-gray-50 transition ${isChecked ? "translate-x-5" : "translate-x-0"}`}></div>
         </div>
     )

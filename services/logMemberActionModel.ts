@@ -1,5 +1,5 @@
 import clientPromise from "./mongodb";
-import { LogMemberAction, Whitelist } from "./interfaces";
+import { LogMemberAction, MemberActionType, Whitelist } from "./interfaces";
 import { ObjectId } from "mongodb";
 
 const collectionName = "logMemberActions"
@@ -9,7 +9,7 @@ async function getCollection() {
     return client.db(process.env.MONGODB_DB_NAME).collection<LogMemberAction>(collectionName)
 }
 
-export async function addMemberAction(whitelist: Whitelist, memberName: string, memberId: string, memberAddress: string, action: string) {
+export async function addMemberAction(whitelist: Whitelist, memberName: string, memberId: string, memberAddress: string, action: MemberActionType) {
     const collection = await getCollection()
     const logMemberAction: LogMemberAction = {
         _id: new ObjectId(),
@@ -25,9 +25,26 @@ export async function addMemberAction(whitelist: Whitelist, memberName: string, 
     return logMemberAction
 }
 
-export async function getAllLogsByWhitelist(whitelist: Whitelist, limit: number = 50, skip: number = 0) {
+export async function getMembersOnline(whitelist: Whitelist) {
     const collection = await getCollection()
-    const docs = collection.find({ whitelistId: whitelist._id }, { limit, skip })
+    const docs = collection.aggregate<LogMemberAction>([
+        { $match: { whitelistId: whitelist._id } },
+        { $sort: { createdAt: -1 } },
+        {
+            $group: {
+                _id: '$memberId',
+                whitelistId: { $first: '$whitelistId' },
+                action: { $first: '$action' },
+                createdAt: { $first: '$createdAt' },
+                memberId: { $first: '$memberId' },
+                memberName: { $first: '$memberName' },
+                memberAddress: {
+                    $first: '$memberAddress'
+                }
+            }
+        },
+        { $unset: '_id' }
+    ])
     const logs: LogMemberAction[] = []
 
     for await (const doc of docs) {
