@@ -56,6 +56,17 @@ export async function getOwnedWhitelist(ownerId: ObjectId, whitelistId: ObjectId
     return whitelist
 }
 
+export async function getByApiToken(apiToken: string): Promise<Whitelist> {
+    const collection = await getCollection()
+    const whitelist = await collection.findOne({ apiToken })
+
+    if (whitelist === null) {
+        throw new WhitelistNotFound
+    }
+
+    return whitelist
+}
+
 export async function removeOwnedWhitelist(ownerId: ObjectId, whitelistId: ObjectId) {
     const collection = await getCollection()
     const result = await collection.deleteOne({ _id: whitelistId, ownerId })
@@ -142,6 +153,7 @@ export async function setAccessMemberWhitelist(ownerId: ObjectId, whitelistId: O
         throw new SetAccessMemberWhitelistFailed
     }
 }
+
 export async function getPluginWhitelist(apiToken: string): Promise<WhitelistPlugin> {
     const collection = await getCollection()
     const docs = collection.aggregate([
@@ -189,3 +201,4 @@ export class DeleteOwnedWhitelistFailed extends Error { }
 export class NewInviteCodeFailed extends Error { }
 export class NewApiTokenFailed extends Error { }
 export class OwnedWhitelistNotFound extends Error { }
+export class WhitelistNotFound extends Error { }

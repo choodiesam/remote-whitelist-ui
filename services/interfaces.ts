@@ -21,6 +21,16 @@ export interface Member {
     allowed: boolean
 }
 
+export interface LogMemberAction {
+    _id: ObjectId,
+    whitelistId: ObjectId,
+    memberName: string,
+    memberId: string,
+    memberAddress: string,
+    action: string,
+    createdAt: string,
+}
+
 export interface Account {
     _id: ObjectId
     userId: ObjectId
