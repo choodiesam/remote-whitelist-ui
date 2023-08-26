@@ -4,6 +4,7 @@ import ButtonComponent from "./buttonComponent"
 import { Fragment, useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import MemberOnlineStatusComponent from "./memberOnlineStatusComponent"
+import DialogComponent from "./dialogComponent"
 
 async function addMember(whitelist: Whitelist, member: Member): Promise<boolean> {
     return fetch(`/api/whitelist/${whitelist._id}/member/${member.steamId}`, {
@@ -139,7 +140,14 @@ export default function WhitelistMembersComponent({ whitelist, onChange }: Props
                             />
                             <div className="ml-2">{member.steamId}</div>
                             <SwitchComponent isChecked={member.allowed} onChange={() => handleToggleAccessMember(member)} onColor="bg-emerald-500" />
-                            <ButtonComponent text="Remove" onClick={() => handleRemoveMember(member)} bgColor="bg-rose-500" />
+                            <DialogComponent
+                                title="Do you really want to remove a member from the whitelist?"
+                                description="Once confirmed, this action cannot be reversed."
+                                onAccept={() => handleRemoveMember(member)}
+                                onCancel={() => { }}
+                            >
+                                <ButtonComponent text="Remove" bgColor="bg-rose-500" />
+                            </DialogComponent>
                         </Fragment>
                     )
                 })}

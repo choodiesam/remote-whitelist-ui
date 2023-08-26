@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import LoadingComponent from "@/components/loadingComponent"
 import ButtonComponent from "@/components/buttonComponent"
 import WhitelistMembersComponent from "@/components/whitelistMembersComponent"
+import DialogComponent from "@/components/dialogComponent"
 
 async function fetchWhitelist(id: string): Promise<Whitelist | null> {
     return fetch(`/api/whitelist/${id}`)
@@ -108,21 +109,52 @@ export default function WhitelistDetail({ params }: { params: { id: string } }) 
     return (
         <div className="flex flex-col gap-6">
             <div className="text-sm">Detail whitelist</div>
-            <div className="flex flex-col gap-1">
-                <div className="font-bold">Name</div>
-                <div>{whitelist.name}</div>
-                <div className="font-bold">Api token</div>
-                <div>{whitelist.apiToken}</div>
-                <div className="font-bold">Invite code</div>
-                <div>{whitelist.inviteCode}</div>
+            <div className="flex flex-col gap-4">
+                <div>
+                    <div className="font-bold">Name</div>
+                    <div>{whitelist.name}</div>
+                </div>
+                <div>
+                    <div className="font-bold">Api token</div>
+                    <div>{whitelist.apiToken}</div>
+                    <div className="grid grid-cols-[220px_220px] gap-4 text-sm">
+                        <ButtonComponent text="Copy whitelist endpoint" onClick={() => copyWhitelistEndpoint(whitelist.apiToken)} />
+                        <ButtonComponent text="Copy member action endpoint" onClick={() => copyMemberEndpoint(whitelist.apiToken)} />
+                    </div>
+                </div>
+                <div>
+                    <div className="font-bold">Invite code</div>
+                    <div>{whitelist.inviteCode}</div>
+                    <div className="grid grid-cols-[220px] gap-4 text-sm">
+                        <ButtonComponent text="Copy invite link" onClick={() => copyInviteLink(whitelist.inviteCode)} />
+                    </div>
+                </div>
             </div>
             <div className="grid grid-cols-3 gap-4 max-w-3xl">
-                <ButtonComponent text="Copy invite link" onClick={() => copyInviteLink(whitelist.inviteCode)} />
-                <ButtonComponent text="Copy whitelist endpoint" onClick={() => copyWhitelistEndpoint(whitelist.apiToken)} />
-                <ButtonComponent text="Copy member action endpoint" onClick={() => copyMemberEndpoint(whitelist.apiToken)} />
-                <ButtonComponent text="New invite code" onClick={() => newInviteCode(whitelist)} bgColor="bg-emerald-600" />
-                <ButtonComponent text="New api token" onClick={() => newApiToken(whitelist)} bgColor="bg-emerald-600" />
-                <ButtonComponent text="Remove" onClick={() => removeWhitelist(whitelist)} bgColor="bg-rose-500" />
+                <DialogComponent
+                    title="Do you really want to generate a new invite code?"
+                    description="The old code will be invalidated."
+                    onAccept={() => newInviteCode(whitelist)}
+                    onCancel={() => { }}
+                >
+                    <ButtonComponent text="New invite code" bgColor="bg-emerald-600" />
+                </DialogComponent>
+                <DialogComponent
+                    title="Do you really want to generate a new API token?"
+                    description="The old token can no longer be used."
+                    onAccept={() => newApiToken(whitelist)}
+                    onCancel={() => { }}
+                >
+                    <ButtonComponent text="New api token" bgColor="bg-emerald-600" />
+                </DialogComponent>
+                <DialogComponent
+                    title="Do you really want to delete the whitelist?"
+                    description="Once confirmed, this action cannot be reversed."
+                    onAccept={() => removeWhitelist(whitelist)}
+                    onCancel={() => { }}
+                >
+                    <ButtonComponent text="Remove" bgColor="bg-rose-500" />
+                </DialogComponent>
             </div>
             <WhitelistMembersComponent whitelist={whitelist} onChange={() => setWhitelist({ ...whitelist })} />
         </div>

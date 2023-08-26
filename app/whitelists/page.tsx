@@ -3,7 +3,6 @@
 import ButtonComponent from "@/components/buttonComponent"
 import LoadingComponent from "@/components/loadingComponent"
 import { Whitelist } from "@/services/interfaces"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Fragment, useEffect, useState } from "react"
 import { toast } from "react-toastify"

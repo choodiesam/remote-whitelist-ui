@@ -15,7 +15,7 @@ export default function ButtonComponent({
     return (
         <button
             onClick={onClick}
-            className={`${bgColor} ${textColor} p-2 rounded bg-opacity-70 hover:bg-opacity-100`}
+            className={`${bgColor} ${textColor} p-2 rounded bg-opacity-70 hover:bg-opacity-100 w-full h-full`}
         >{text}</button>
     )
 } 
