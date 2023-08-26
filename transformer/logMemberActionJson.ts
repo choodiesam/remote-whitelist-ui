@@ -7,11 +7,13 @@
 // These functions will throw an error if the JSON doesn't
 // match the expected interface, even if the JSON is valid.
 
+import { MemberActionType } from "@/services/interfaces";
+
 export interface LogMemberAction {
     playerName:    string;
     playerId:      string;
     playerAddress: string;
-    action:        string;
+    action:        MemberActionType;
 }
 
 // Converts JSON strings to/from your types
