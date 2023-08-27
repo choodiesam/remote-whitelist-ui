@@ -5,6 +5,7 @@ import { Fragment, useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import MemberOnlineStatusComponent from "./memberOnlineStatusComponent"
 import DialogComponent from "./dialogComponent"
+import BansComponent from "./bansComponents"
 
 async function addMember(whitelist: Whitelist, member: Member): Promise<boolean> {
     return fetch(`/api/whitelist/${whitelist._id}/member/${member.steamId}`, {
@@ -103,7 +104,9 @@ export default function WhitelistMembersComponent({ whitelist, onChange }: Props
         }
     }
     async function handleAddMember() {
-        if (steamId.length < 5) {
+        const steamIdRegExp = new RegExp('[0-9]{17}')
+
+        if (!steamIdRegExp.test(steamId)) {
             return toast.warning("Invalid steamId")
         }
         const newMember: Member = { steamId, allowed: isAllowed }
@@ -122,10 +125,12 @@ export default function WhitelistMembersComponent({ whitelist, onChange }: Props
     return (
         <div>
             <div className="font-bold">Members</div>
-            <div className="grid grid-cols-[50px_180px_min-content_min-content] items-center gap-4">
+            <div className="grid grid-cols-[60px_60px_180px_min-content_min-content] items-center gap-4">
                 <div>Online</div>
+                <div>Bans</div>
                 <div>Steam ID</div>
                 <div>Allowed</div>
+                <div></div>
                 <div></div>
                 <div></div>
                 <input onInput={e => setSteamId(e.currentTarget.value)} value={steamId} className="p-2 bg-stone-200 rounded focus:bg-stone-300" placeholder="new member" />
@@ -138,6 +143,7 @@ export default function WhitelistMembersComponent({ whitelist, onChange }: Props
                                 isLoading={membersOnlineLoading}
                                 logMemberAction={membersOnline.find(mO => mO.memberId === member.steamId)}
                             />
+                            <BansComponent member={member} />
                             <div className="ml-2">{member.steamId}</div>
                             <SwitchComponent isChecked={member.allowed} onChange={() => handleToggleAccessMember(member)} onColor="bg-emerald-500" />
                             <DialogComponent

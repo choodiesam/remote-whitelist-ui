@@ -22,6 +22,11 @@ export interface Member {
     allowed: boolean
 }
 
+export interface MemberBans {
+    vacBan: boolean
+    gameBan: boolean
+}
+
 export interface LogMemberAction {
     _id: ObjectId,
     whitelistId: ObjectId,
